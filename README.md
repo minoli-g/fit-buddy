@@ -1,16 +1,11 @@
-# fit_buddy
+# Fit Buddy
 
-A new Flutter project.
+An automatic exercise tracker and fitness assistant
 
-## Getting Started
+## Developer setup
 
-This project is a starting point for a Flutter application.
+Installation: Follow the instructions at https://docs.flutter.dev/get-started/install/windows to install the Flutter SDK and set up Android Studio plugins and licenses. Also make sure there is an emulator or physical device available. The "Windows Setup" portion can be neglected.
 
-A few resources to get you started if this is your first Flutter project:
+Code setup: Follow the instructions at https://docs.flutter.dev/get-started/editor to set up Visual Studio Code for development and running.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Running the app: Clone this repository and open it in VS Code. Select the emulator/physical device from the Device Selector area at the right side of the blue toolbar at the bottom. Run `flutter run` in a console window at the project root. 
