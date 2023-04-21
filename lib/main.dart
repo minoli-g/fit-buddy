@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fit_buddy/navbar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,11 +11,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Fit Buddy: Home',
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Fit Buddy: Home'),
     );
   }
 }
@@ -62,6 +63,10 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
+      ),
+
+      bottomNavigationBar: BottomNavigator.buildBar(
+        context, 0
       ),
     );
   }
