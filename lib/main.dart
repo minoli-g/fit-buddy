@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:fit_buddy/navbar.dart';
+import 'package:fit_buddy/goals.dart';
+import 'package:fit_buddy/music.dart';
+import 'package:fit_buddy/history.dart';
+import 'package:fit_buddy/activity.dart';
+//import 'package:fit_buddy/navbar.dart';
 
 void main() {
+  
   runApp(const MyApp());
 }
 
@@ -30,11 +35,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  int selectedIndex = 0;
 
-  void _incrementCounter() {
+  final widgetOptions = {
+    const ActivityPage(title: "Counter"),
+    const GoalsPage(title: "Goals"),
+    const HistoryPage(title: "History"),
+    const MusicPage(title: "Music")
+  };
+
+  void onItemTapped(int index) {
     setState(() {
-      _counter++;
+      selectedIndex = index;
     });
   }
 
@@ -46,28 +58,40 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        child: widgetOptions.elementAt(selectedIndex)
       ),
 
-      bottomNavigationBar: BottomNavigator.buildBar(
-        context, 0
-      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        items: 
+          const <BottomNavigationBarItem>[
+
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+
+            BottomNavigationBarItem(
+              icon: Icon(Icons.history),
+              label: 'History',
+            ),
+
+            BottomNavigationBarItem(
+              icon: Icon(Icons.assignment),
+              label: 'Goals',
+            ),
+
+            BottomNavigationBarItem(
+              icon: Icon(Icons.music_note),
+              label: 'Music',
+            ),
+          ],
+
+          currentIndex: selectedIndex,
+          selectedItemColor: Colors.amber[800],
+          onTap: onItemTapped,
+      
+      )
     );
   }
 }
