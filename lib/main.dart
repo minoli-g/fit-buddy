@@ -3,10 +3,8 @@ import 'package:fit_buddy/goals.dart';
 import 'package:fit_buddy/music.dart';
 import 'package:fit_buddy/history.dart';
 import 'package:fit_buddy/activity.dart';
-//import 'package:fit_buddy/navbar.dart';
 
 void main() {
-  
   runApp(const MyApp());
 }
 
@@ -36,13 +34,18 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int selectedIndex = 0;
+  late List<Widget> widgetOptions;
 
-  final widgetOptions = {
-    const ActivityPage(title: "Counter"),
-    const GoalsPage(title: "Goals"),
-    const HistoryPage(title: "History"),
-    const MusicPage(title: "Music")
-  };
+  @override
+  void initState(){
+    super.initState();
+    widgetOptions = [
+      const ActivityPage(title: "Counter"),
+      const HistoryPage(title: "History"),
+      const GoalsPage(title: "Goals"),
+      const MusicPage(title: "Music")
+    ];
+  }
 
   void onItemTapped(int index) {
     setState(() {
@@ -57,8 +60,11 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: widgetOptions.elementAt(selectedIndex)
+
+      body: IndexedStack(
+        alignment: Alignment.centerRight,
+        index: selectedIndex,
+        children: widgetOptions
       ),
 
       bottomNavigationBar: BottomNavigationBar(
