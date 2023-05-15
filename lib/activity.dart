@@ -13,13 +13,12 @@ class ActivityPage extends StatefulWidget{
 
 class _ActivityPageState extends State<ActivityPage>{
 
-  int _counter = 0;
-
   final _activityStreamController = StreamController<Activity>();
   StreamSubscription<Activity>? _activityStreamSubscription;
 
   void _onActivityReceive(Activity activity) {
     print('Activity Detected >> ${activity.toJson()}');
+
     // TODO - 
     //Calculate the time elapsed since previous update
     //Increment the DB record for previous activity by that amount 
@@ -69,19 +68,23 @@ class _ActivityPageState extends State<ActivityPage>{
       stream: _activityStreamController.stream,
       builder: (context, snapshot) {
         final updatedDateTime = DateTime.now();
-        final content = snapshot.data?.toJson().toString() ?? '';
 
-        return Text('•\t\tActivity (type: $content, updated: $updatedDateTime)');
+        String detectedType = snapshot.data?.toJson()["type"].toString() ?? "ActivityType.UNKNOWN";
+        detectedType = detectedType.substring(13); // Remove the "ActivityType." section
+
+        String detectedConfidence = snapshot.data?.toJson()["confidence"].toString() ?? "ActivityConfidence.LOW";
+        detectedConfidence = detectedConfidence.substring(19); // Remove the "ActivityConfidence." section
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("Current Activity: "),
+            Text(detectedType),
+            Text("Confidence Level: $detectedConfidence")
+          ],
+        );
       }
     );
-  }
-
-  
-
-  void _incrementCounter(){
-    setState(() {
-      _counter++;
-    });
   }
 
   @override
@@ -90,14 +93,6 @@ class _ActivityPageState extends State<ActivityPage>{
     return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              '$_counter',
-            ),
-            FloatingActionButton(
-              onPressed: _incrementCounter,
-              tooltip: 'Increment',
-              child: const Icon(Icons.add),
-            ),
             _buildContentView()
           ],
         );
