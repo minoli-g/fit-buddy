@@ -80,7 +80,8 @@ class _ActivityPageState extends State<ActivityPage>{
           children: [
             const Text("Current Activity: "),
             Text(detectedType),
-            Text("Confidence Level: $detectedConfidence")
+            Text("Confidence Level: $detectedConfidence"),
+            Text("Updated at: $updatedDateTime")
           ],
         );
       }
