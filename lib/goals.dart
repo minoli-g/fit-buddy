@@ -11,6 +11,11 @@ class GoalsPage extends StatefulWidget{
 
 class _GoalsPageState extends State<GoalsPage>{
 
+  // TODO - 
+  // Load today's activity records from DB
+  // Load the goals set by user and check if they're completed
+  // Display some suitable diagrams / messages
+
   @override
   Widget build(BuildContext context) {
     

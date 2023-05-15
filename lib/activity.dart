@@ -20,8 +20,9 @@ class _ActivityPageState extends State<ActivityPage>{
     print('Activity Detected >> ${activity.toJson()}');
 
     // TODO - 
-    //Calculate the time elapsed since previous update
-    //Increment the DB record for previous activity by that amount 
+    // Calculate the time elapsed since previous update
+    // Increment the DB record for previous activity by that amount 
+    // Start playing music corresponding to detected type (add this last)
     _activityStreamController.sink.add(activity);
   }
 

@@ -11,6 +11,11 @@ class MusicPage extends StatefulWidget{
 
 class _MusicPageState extends State<MusicPage>{
 
+  // TODO - 
+  // Load and display the playlists (just song names) for each activity type
+  // Input to allow user to add/remove songs 
+  // Will need to include some tunes as defaults
+
   @override
   Widget build(BuildContext context) {
     

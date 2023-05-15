@@ -11,6 +11,10 @@ class HistoryPage extends StatefulWidget{
 
 class _HistoryPageState extends State<HistoryPage>{
 
+  // TODO - 
+  // On opening the page, delete any records older than 2 weeks
+  // Load the remaining records and display in a nice graphical format
+
   @override
   Widget build(BuildContext context) {
     
