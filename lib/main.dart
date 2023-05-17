@@ -1,10 +1,14 @@
+import 'package:hive_flutter/hive_flutter.dart';
+
 import 'package:flutter/material.dart';
 import 'package:fit_buddy/goals.dart';
 import 'package:fit_buddy/music.dart';
 import 'package:fit_buddy/history.dart';
 import 'package:fit_buddy/activity.dart';
 
-void main() {
+void main() async{
+  await Hive.initFlutter();
+  await Hive.openBox('logBox');
   runApp(const MyApp());
 }
 
