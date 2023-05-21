@@ -13,7 +13,7 @@ class DatabaseAdapter {
     final currentDateTemp = DateTime.now();
     final currentDay = DateTime (currentDateTemp.year, currentDateTemp.month, currentDateTemp.day);
 
-    var dailyRecord = await box.get(currentDay, defaultValue: null);
+    var dailyRecord = await box.get(currentDay.millisecondsSinceEpoch.toString(), defaultValue: null);
 
     // If it does not exist already, initialize with default values and store in DB
     if (dailyRecord == null){
@@ -23,7 +23,7 @@ class DatabaseAdapter {
         runTime: 0,
         bicycleTime: 0
       );
-      box.put(currentDay.toString(), dailyRecord);
+      box.put(currentDay.millisecondsSinceEpoch.toString(), dailyRecord);
     }
     
     return dailyRecord;
@@ -55,7 +55,19 @@ class DatabaseAdapter {
     final box = Hive.box("logBox");
     final currentDateTemp = DateTime.now();
     final currentDay = DateTime (currentDateTemp.year, currentDateTemp.month, currentDateTemp.day);
-    box.put(currentDay.toString(), currentDailyLog);    
+    box.put(currentDay.millisecondsSinceEpoch.toString(), currentDailyLog);    
+  }
+
+  // TODO - Method to delete data older than 2w
+
+  static List<Log> getAllRecords()  {
+    final box = Hive.box("logBox");
+    List<Log> allLogs = [];
+
+    for (int i=0; i<box.length; i++){
+      allLogs.add(box.getAt(i));
+    }
+    return allLogs;
   }
 
 }
