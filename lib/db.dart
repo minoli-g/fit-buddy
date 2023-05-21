@@ -1,6 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_activity_recognition/flutter_activity_recognition.dart';
-import 'log.dart';
+import 'package:fit_buddy/log.dart';
 
 /// Utility class which interfaces with the logBox in Hive DB.
 class DatabaseAdapter {
