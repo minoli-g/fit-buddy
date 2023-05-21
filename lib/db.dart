@@ -23,7 +23,7 @@ class DatabaseAdapter {
         runTime: 0,
         bicycleTime: 0
       );
-      box.put(currentDay, dailyRecord);
+      box.put(currentDay.toString(), dailyRecord);
     }
     
     return dailyRecord;
@@ -55,7 +55,7 @@ class DatabaseAdapter {
     final box = Hive.box("logBox");
     final currentDateTemp = DateTime.now();
     final currentDay = DateTime (currentDateTemp.year, currentDateTemp.month, currentDateTemp.day);
-    box.put(currentDay, currentDailyLog);    
+    box.put(currentDay.toString(), currentDailyLog);    
   }
 
 }
