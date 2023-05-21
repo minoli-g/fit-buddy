@@ -90,11 +90,8 @@ class _ActivityPageState extends State<ActivityPage>{
       builder: (context, snapshot) {
         final updatedDateTime = DateTime.now();
 
-        String detectedType = snapshot.data?.toJson()["type"].toString() ?? "ActivityType.UNKNOWN";
-        detectedType = detectedType.substring(13); // Remove the "ActivityType." section
-
-        String detectedConfidence = snapshot.data?.toJson()["confidence"].toString() ?? "ActivityConfidence.LOW";
-        detectedConfidence = detectedConfidence.substring(19); // Remove the "ActivityConfidence." section
+        String detectedType = snapshot.data?.type.toString().split('.').last ?? "UNKNOWN";
+        String detectedConfidence = snapshot.data?.confidence.toString().split('.').last ?? "LOW";
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
