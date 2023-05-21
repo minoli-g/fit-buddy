@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_activity_recognition/flutter_activity_recognition.dart';
 import 'package:flutter/material.dart';
+import 'package:fit_buddy/db.dart';
 
 class ActivityPage extends StatefulWidget{
   const ActivityPage({super.key, required this.title});
@@ -16,13 +17,32 @@ class _ActivityPageState extends State<ActivityPage>{
   final _activityStreamController = StreamController<Activity>();
   StreamSubscription<Activity>? _activityStreamSubscription;
 
+  /// The time at which the activity last changed (NOT the time of last update from stream)
+  DateTime activityUpdateTime = DateTime.now();  
+
+  /// The last recorded activity type (user's current activity)
+  ActivityType currentActivityType = ActivityType.UNKNOWN;
+
   void _onActivityReceive(Activity activity) {
     print('Activity Detected >> ${activity.toJson()}');
 
-    // TODO - 
-    // Calculate the time elapsed since previous update
-    // Increment the DB record for previous activity by that amount 
-    // Start playing music corresponding to detected type (add this last)
+    // When the activity type changes
+    if (activity.type != currentActivityType){
+
+      // Update the time spent on the old activity, only if > 1 minute has passed.
+      if (DateTime.now().isAfter(activityUpdateTime.add(const Duration(seconds: 60)))){
+        DatabaseAdapter.addActivityTime(
+          currentActivityType, 
+          DateTime.now().difference(activityUpdateTime)
+        );
+      }
+
+      currentActivityType = activity.type;
+      activityUpdateTime = DateTime.now();
+
+      //TODO -  Start playing music corresponding to new activity 
+    }
+
     _activityStreamController.sink.add(activity);
   }
 
