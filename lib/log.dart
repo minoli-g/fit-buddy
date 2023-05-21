@@ -10,13 +10,13 @@ class Log {
   // The vehicle, still and unknown activity types will not be recorded.
 
   @HiveField(1)
-  final int walkTime;
+  int walkTime;
 
   @HiveField(2)
-  final int runTime;
+  int runTime;
 
   @HiveField(3)
-  final int bicycleTime;
+  int bicycleTime;
 
   Log({
     required this.date,
