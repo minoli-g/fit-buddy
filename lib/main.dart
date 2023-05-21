@@ -6,9 +6,15 @@ import 'package:fit_buddy/music.dart';
 import 'package:fit_buddy/history.dart';
 import 'package:fit_buddy/activity.dart';
 
+import 'log.dart';
+
 void main() async{
   await Hive.initFlutter();
+
+  // Open the box which keeps the activity logs and register its adapter
   await Hive.openBox('logBox');
+  Hive.registerAdapter(LogAdapter());
+  
   runApp(const MyApp());
 }
 
