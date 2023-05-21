@@ -12,8 +12,8 @@ void main() async{
   await Hive.initFlutter();
 
   // Open the box which keeps the activity logs and register its adapter
-  await Hive.openBox('logBox');
   Hive.registerAdapter(LogAdapter());
+  await Hive.openBox('logBox');
   
   runApp(const MyApp());
 }
