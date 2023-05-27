@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fit_buddy/db.dart';
 import 'package:fit_buddy/log.dart';
 
+import 'package:fl_chart/fl_chart.dart';
+
 class HistoryPage extends StatefulWidget{
   const HistoryPage({super.key, required this.title});
 
@@ -15,43 +17,153 @@ class _HistoryPageState extends State<HistoryPage>{
 
   // TODO - 
   // On opening the page, delete any records older than 2 weeks
-  // Display loaded records in a nice graphical format
 
   List<Log> allRecords = DatabaseAdapter.getAllRecords();
 
-  @override
-  Widget build(BuildContext context) {
 
-    return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ListView.separated(
+  Widget getTrendGraph(){
+
+    List<FlSpot> walkTimes = [];
+    List<FlSpot> runTimes = [];
+    List<FlSpot> bicycleTimes = [];
+
+    for (int i=0; i<allRecords.length; i++){
+
+      Log l = allRecords[i];
+
+      walkTimes.add(FlSpot( i.toDouble(), l.walkTime.toDouble()));
+      runTimes.add(FlSpot( i.toDouble(), l.runTime.toDouble()));
+      bicycleTimes.add(FlSpot( i.toDouble(), l.bicycleTime.toDouble()));
+    }
+
+    return  Container(
+          padding: const EdgeInsets.only(top:15, bottom:15, right:15),
+          margin: const EdgeInsets.all(15),
+          width: double.infinity,
+          height: 280,
+          child: LineChart(
+            LineChartData(
+              borderData: FlBorderData(show: false), 
+              gridData: FlGridData( show: false),
+              lineBarsData: [
+                LineChartBarData(spots: walkTimes, color: Colors.blue),
+                LineChartBarData(spots: runTimes, color: Colors.pink),
+                LineChartBarData(spots: bicycleTimes, color: Colors.purple),
+              ],
+              titlesData: FlTitlesData(
+                leftTitles: AxisTitles(axisNameWidget: const Text("Minutes"), sideTitles: SideTitles(showTitles: true, reservedSize:30)),
+                bottomTitles: AxisTitles(axisNameWidget: const Text("Day"), sideTitles: SideTitles(showTitles: true)),
+                topTitles: AxisTitles( sideTitles: SideTitles(showTitles: false)),
+                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              ),
+            ),
+          ),
+    );
+  }
+
+  Widget getHistoryList(){
+    return ListView.separated(
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               padding: const EdgeInsets.all(8),
               itemCount: allRecords.length,
               itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  height: 50,
-                  color: Colors.grey,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(allRecords[index].walkTime.toString(), textAlign: TextAlign.center)
+                int reverseIndex = allRecords.length - index - 1;
+                return Column(
+                  children: [
+                    Container (
+                      height: 20,
+                      child: Row (
+                        children: [
+                          Expanded (
+                            child: Text (allRecords[reverseIndex].date.toString().substring(0,10))
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: Text(allRecords[index].runTime.toString(), textAlign: TextAlign.center)
+                    ),
+                    Container(
+                      height: 50,
+                      color: Colors.grey.shade200,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Row (
+                              children: [
+                                const Icon (Icons.directions_walk),
+                                Text("${allRecords[reverseIndex].walkTime} min", textAlign: TextAlign.center)
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Row (
+                              children: [
+                                const Icon (Icons.directions_run),
+                                Text("${allRecords[reverseIndex].runTime} min", textAlign: TextAlign.center)
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Row (
+                              children: [
+                                const Icon (Icons.directions_bike),
+                                Text("  ${allRecords[reverseIndex].bicycleTime} min", textAlign: TextAlign.center)
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: Text(allRecords[index].bicycleTime.toString(), textAlign: TextAlign.center)
-                      ),
-                    ],
-                  ),
+                    )
+                  ]
                 );
               },
               separatorBuilder: (BuildContext context, int index) => const Divider(),
-            )
+            );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return SingleChildScrollView (
+      child : 
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            getTrendGraph(),
+            Container(
+              padding: const EdgeInsets.only(left:10, right:10), height: 50,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Row (
+                      children: const [
+                        Icon (Icons.directions_walk, color: Colors.blue),
+                        Text("  Walking", textAlign: TextAlign.center)
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Row (
+                      children: const [
+                        Icon (Icons.directions_run, color: Colors.pink),
+                        Text("  Running", textAlign: TextAlign.center)
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Row (
+                      children: const[
+                          Icon (Icons.directions_bike, color: Colors.purple),
+                        Text("  Bicycling", textAlign: TextAlign.center)
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          
+            getHistoryList()
            ],
-        );
+        )
+    );
   }
 }
