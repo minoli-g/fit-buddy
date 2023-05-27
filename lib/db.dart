@@ -2,6 +2,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_activity_recognition/flutter_activity_recognition.dart';
 import 'package:fit_buddy/log.dart';
 
+import 'dart:math';
+
 /// Utility class which interfaces with the logBox in Hive DB.
 class DatabaseAdapter {
 
@@ -68,6 +70,28 @@ class DatabaseAdapter {
       allLogs.add(box.getAt(i));
     }
     return allLogs;
+  }
+
+  /// Generate random values with which to initialize the DB for testing
+  static void setupDB(){
+
+    final box = Hive.box("logBox");
+    final currentDateTemp = DateTime.now();
+    Random random = Random();
+
+    for (int i=0; i<12; i++){
+      var day = DateTime (
+        currentDateTemp.year, currentDateTemp.month, currentDateTemp.day-i-1
+      );
+      Log log = Log(
+        date: day,
+        walkTime: random.nextInt(10)*10,
+        runTime: random.nextInt(10)*10,
+        bicycleTime: random.nextInt(10)*10
+      );
+      box.put(day.millisecondsSinceEpoch.toString(), log);
+    }
+
   }
 
 }
