@@ -53,7 +53,7 @@ class _ActivityPageState extends State<ActivityPage>{
   @override
   void initState() {
     super.initState();
-    //DatabaseAdapter.setupDB();
+    DatabaseAdapter.setupRealisticDB();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final activityRecognition = FlutterActivityRecognition.instance;
 

@@ -15,10 +15,21 @@ class HistoryPage extends StatefulWidget{
 
 class _HistoryPageState extends State<HistoryPage>{
 
-  // TODO - 
-  // On opening the page, delete any records older than 2 weeks
+  late List<Log> allRecords;
 
-  List<Log> allRecords = DatabaseAdapter.getAllRecords();
+  @override
+  void initState(){
+    super.initState();
+
+    // Loads an empty record for the current day if no activity
+    DatabaseAdapter.getCurrentDailyActivity();
+
+    // Deletes records older than 2 weeks (14 days)
+    DatabaseAdapter.deleteOldRecords();
+
+    // Initializes the record list
+    allRecords = DatabaseAdapter.getAllRecords();
+  }
 
 
   Widget getTrendGraph(){
@@ -52,7 +63,7 @@ class _HistoryPageState extends State<HistoryPage>{
               ],
               titlesData: FlTitlesData(
                 leftTitles: AxisTitles(axisNameWidget: const Text("Minutes"), sideTitles: SideTitles(showTitles: true, reservedSize:30)),
-                bottomTitles: AxisTitles(axisNameWidget: const Text("Day"), sideTitles: SideTitles(showTitles: true)),
+                bottomTitles: AxisTitles(axisNameWidget: const Text("Day"), sideTitles: SideTitles(showTitles: true, interval: 2)),
                 topTitles: AxisTitles( sideTitles: SideTitles(showTitles: false)),
                 rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
               ),

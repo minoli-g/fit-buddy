@@ -60,7 +60,22 @@ class DatabaseAdapter {
     box.put(currentDay.millisecondsSinceEpoch.toString(), currentDailyLog);    
   }
 
-  // TODO - Method to delete data older than 2w
+  /// Deletes all records older than 2 weeks
+  static void deleteOldRecords(){
+
+    final box = Hive.box("logBox");
+    final oldestDate = DateTime.now().subtract(const Duration(days: 14));
+
+    final itemsToDelete = box.values.where(
+        (element) => element.date.isBefore(oldestDate)
+      ).toList();
+
+    for (var item in itemsToDelete){
+      print("Del");
+      print(item.date.toString());
+      box.delete(item.date.millisecondsSinceEpoch.toString());
+    }
+  }
 
   static List<Log> getAllRecords()  {
     final box = Hive.box("logBox");
@@ -91,6 +106,30 @@ class DatabaseAdapter {
       );
       box.put(day.millisecondsSinceEpoch.toString(), log);
     }
+
+  }
+
+  /// Initialize the DB with realistic values of improving times over 5 days
+  static void setupRealisticDB(){
+
+    final box = Hive.box("logBox");
+    final currentDateTemp = DateTime.now();
+    
+    var day = DateTime (currentDateTemp.year, currentDateTemp.month, currentDateTemp.day-1);
+    Log log = Log(date: day, walkTime: 40, runTime: 10, bicycleTime: 20);
+    box.put(day.millisecondsSinceEpoch.toString(), log);
+
+    day = DateTime (currentDateTemp.year, currentDateTemp.month, currentDateTemp.day-2);
+    log = Log(date: day, walkTime: 30, runTime: 20, bicycleTime: 20);
+    box.put(day.millisecondsSinceEpoch.toString(), log);
+
+    day = DateTime (currentDateTemp.year, currentDateTemp.month, currentDateTemp.day-3);
+    log = Log(date: day, walkTime: 15, runTime: 10, bicycleTime: 0);
+    box.put(day.millisecondsSinceEpoch.toString(), log);
+
+    day = DateTime (currentDateTemp.year, currentDateTemp.month, currentDateTemp.day-4);
+    log = Log(date: day, walkTime: 10, runTime: 0, bicycleTime: 0);
+    box.put(day.millisecondsSinceEpoch.toString(), log);
 
   }
 
