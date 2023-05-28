@@ -96,11 +96,72 @@ class _ActivityPageState extends State<ActivityPage>{
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text("Current Activity: "),
-            Text(detectedType),
-            Text("Confidence Level: $detectedConfidence"),
-            Text("Updated at: $updatedDateTime")
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [ 
+                  Text(
+                    "Current Activity: ",
+                    style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.5),
+                  ),
+                  Container (
+                    padding: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.teal.shade50,
+                      border: Border.all(color: Colors.grey), 
+                      borderRadius: const BorderRadius.all(Radius.circular(12)),
+                    ),
+                    child: Text(
+                      detectedType,
+                      style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0),
+                      ),
+                  ),
+                  Text("Confidence Level: $detectedConfidence"),
+                  Text("Updated at: $updatedDateTime")
+                ]
+              )
+            ),
+            Container (
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey), 
+                borderRadius: const BorderRadius.all(Radius.circular(20))
+              ),
+              child: Row(
+                  children: const [
+                    Icon(Icons.info),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left:10), 
+                        child:Text( "We detect six possible types of activities: walking, bicycling, running, travelling in a vehicle, still, and unknown. For fitness purposes, we track only the first three.")
+                      )
+                    )
+                  ],
+                )
+            ),
+            Container (
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey), 
+                borderRadius: const BorderRadius.all(Radius.circular(20))
+              ),
+              child: Row(
+                  children: const [
+                    Icon(Icons.info),
+                    Expanded( 
+                      child: Padding(
+                        padding: EdgeInsets.only(left:10), 
+                        child: Text("When the activity changes, it may take a minute or two for the update to appear")
+                      )
+                    )
+                  ],
+                )
+            ),
           ],
         );
       }
@@ -112,6 +173,7 @@ class _ActivityPageState extends State<ActivityPage>{
     
     return Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildContentView()
           ],

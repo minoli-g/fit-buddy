@@ -24,11 +24,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Fit Buddy: Home',
+      title: 'Fit Buddy: Your friendly fitness tracker',
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const MyHomePage(title: 'Fit Buddy: Home'),
+      home: const MyHomePage(title: 'Fit Buddy: Your friendly fitness tracker'),
     );
   }
 }
@@ -72,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       body: IndexedStack(
-        alignment: Alignment.centerRight,
+        alignment: Alignment.center,
         index: selectedIndex,
         children: widgetOptions
       ),
