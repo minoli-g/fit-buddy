@@ -4,7 +4,9 @@
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-   <application
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
         android:label="fit_buddy"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
