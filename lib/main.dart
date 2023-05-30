@@ -1,10 +1,20 @@
+import 'package:hive_flutter/hive_flutter.dart';
+
 import 'package:flutter/material.dart';
 import 'package:fit_buddy/goals.dart';
 import 'package:fit_buddy/music.dart';
 import 'package:fit_buddy/history.dart';
 import 'package:fit_buddy/activity.dart';
 
-void main() {
+import 'log.dart';
+
+void main() async{
+  await Hive.initFlutter();
+
+  // Open the box which keeps the activity logs and register its adapter
+  Hive.registerAdapter(LogAdapter());
+  await Hive.openBox('logBox');
+  
   runApp(const MyApp());
 }
 
@@ -14,11 +24,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Fit Buddy: Home',
+      title: 'Fit Buddy: Your friendly fitness tracker',
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const MyHomePage(title: 'Fit Buddy: Home'),
+      home: const MyHomePage(title: 'Fit Buddy: Your friendly fitness tracker'),
     );
   }
 }
@@ -62,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       body: IndexedStack(
-        alignment: Alignment.centerRight,
+        alignment: Alignment.center,
         index: selectedIndex,
         children: widgetOptions
       ),

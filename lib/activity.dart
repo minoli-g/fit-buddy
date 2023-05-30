@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_activity_recognition/flutter_activity_recognition.dart';
 import 'package:flutter/material.dart';
+import 'package:fit_buddy/db.dart';
 
 class ActivityPage extends StatefulWidget{
   const ActivityPage({super.key, required this.title});
@@ -16,13 +17,32 @@ class _ActivityPageState extends State<ActivityPage>{
   final _activityStreamController = StreamController<Activity>();
   StreamSubscription<Activity>? _activityStreamSubscription;
 
+  /// The time at which the activity last changed (NOT the time of last update from stream)
+  DateTime activityUpdateTime = DateTime.now();  
+
+  /// The last recorded activity type (user's current activity)
+  ActivityType currentActivityType = ActivityType.UNKNOWN;
+
   void _onActivityReceive(Activity activity) {
     print('Activity Detected >> ${activity.toJson()}');
 
-    // TODO - 
-    // Calculate the time elapsed since previous update
-    // Increment the DB record for previous activity by that amount 
-    // Start playing music corresponding to detected type (add this last)
+    // When the activity type changes
+    if (activity.type != currentActivityType){
+
+      // Update the time spent on the old activity, only if > 1 minute has passed.
+      if (DateTime.now().isAfter(activityUpdateTime.add(const Duration(seconds: 60)))){
+        DatabaseAdapter.addActivityTime(
+          currentActivityType, 
+          DateTime.now().difference(activityUpdateTime)
+        );
+      }
+
+      currentActivityType = activity.type;
+      activityUpdateTime = DateTime.now();
+
+      //TODO -  Start playing music corresponding to new activity 
+    }
+
     _activityStreamController.sink.add(activity);
   }
 
@@ -33,6 +53,7 @@ class _ActivityPageState extends State<ActivityPage>{
   @override
   void initState() {
     super.initState();
+    DatabaseAdapter.setupRealisticDB();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final activityRecognition = FlutterActivityRecognition.instance;
 
@@ -70,19 +91,77 @@ class _ActivityPageState extends State<ActivityPage>{
       builder: (context, snapshot) {
         final updatedDateTime = DateTime.now();
 
-        String detectedType = snapshot.data?.toJson()["type"].toString() ?? "ActivityType.UNKNOWN";
-        detectedType = detectedType.substring(13); // Remove the "ActivityType." section
-
-        String detectedConfidence = snapshot.data?.toJson()["confidence"].toString() ?? "ActivityConfidence.LOW";
-        detectedConfidence = detectedConfidence.substring(19); // Remove the "ActivityConfidence." section
+        String detectedType = snapshot.data?.type.toString().split('.').last ?? "UNKNOWN";
+        String detectedConfidence = snapshot.data?.confidence.toString().split('.').last ?? "LOW";
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text("Current Activity: "),
-            Text(detectedType),
-            Text("Confidence Level: $detectedConfidence"),
-            Text("Updated at: $updatedDateTime")
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [ 
+                  Text(
+                    "Current Activity: ",
+                    style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.5),
+                  ),
+                  Container (
+                    padding: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.teal.shade50,
+                      border: Border.all(color: Colors.grey), 
+                      borderRadius: const BorderRadius.all(Radius.circular(12)),
+                    ),
+                    child: Text(
+                      detectedType,
+                      style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0),
+                      ),
+                  ),
+                  Text("Confidence Level: $detectedConfidence"),
+                  Text("Updated at: $updatedDateTime")
+                ]
+              )
+            ),
+            Container (
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey), 
+                borderRadius: const BorderRadius.all(Radius.circular(20))
+              ),
+              child: Row(
+                  children: const [
+                    Icon(Icons.info),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left:10), 
+                        child:Text( "We detect six possible types of activities: walking, bicycling, running, travelling in a vehicle, still, and unknown. For fitness purposes, we track only the first three.")
+                      )
+                    )
+                  ],
+                )
+            ),
+            Container (
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey), 
+                borderRadius: const BorderRadius.all(Radius.circular(20))
+              ),
+              child: Row(
+                  children: const [
+                    Icon(Icons.info),
+                    Expanded( 
+                      child: Padding(
+                        padding: EdgeInsets.only(left:10), 
+                        child: Text("When the activity changes, it may take a minute or two for the update to appear")
+                      )
+                    )
+                  ],
+                )
+            ),
           ],
         );
       }
@@ -94,6 +173,7 @@ class _ActivityPageState extends State<ActivityPage>{
     
     return Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildContentView()
           ],
