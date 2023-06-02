@@ -33,7 +33,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/
+    - assets/hip-hop-rock-beats-118000.mp3
+    - assets/order-99518.mp3
+    - assets/passion-127011.mp3
 
 
 
