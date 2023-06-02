@@ -9,13 +9,13 @@ class DatabaseAdapter {
 
   /// Checks whether an activity log for the current day exists.
   /// If it does not, initializes one. Returns the retrieved/created log.
-  static Future<Log> getCurrentDailyActivity() async {
+  static Log getCurrentDailyActivity() {
 
     final box = Hive.box("logBox");
     final currentDateTemp = DateTime.now();
     final currentDay = DateTime (currentDateTemp.year, currentDateTemp.month, currentDateTemp.day);
 
-    var dailyRecord = await box.get(currentDay.millisecondsSinceEpoch.toString(), defaultValue: null);
+    var dailyRecord = box.get(currentDay.millisecondsSinceEpoch.toString(), defaultValue: null);
 
     // If it does not exist already, initialize with default values and store in DB
     if (dailyRecord == null){
