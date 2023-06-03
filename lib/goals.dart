@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:fit_buddy/db.dart';
+import 'package:fit_buddy/log.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -148,25 +150,72 @@ class _GoalsPageState extends State<GoalsPage> {
     });
   }
 
+  bool checkAccomplished(ExerciseGoal goal) {
+    Log dailyRecord = DatabaseAdapter.getCurrentDailyActivity();
+
+    switch (goal.type){
+      case ExerciseType.walking:
+        if (dailyRecord.walkTime >= goal.duration * goal.repetitions){
+          return true;
+        }
+        break;
+      case ExerciseType.running:
+        if (dailyRecord.runTime >= goal.duration * goal.repetitions){
+          return true;
+        }
+        break;
+      case ExerciseType.cycling:
+        if (dailyRecord.bicycleTime >= goal.duration * goal.repetitions){
+          return true;
+        }
+        break;
+    }
+    return false;
+  }
+
+  Padding checkAccomplishedText(ExerciseGoal goal){
+    String str;
+    Color color;
+    if (checkAccomplished(goal)){
+      str = "Goal fulfilled! Congratulations.";
+      color = Colors.green;
+    }
+    else{
+      str = "Not done yet! Keep going.";
+      color = Colors.red;
+    }
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Text(
+        str, 
+        style: DefaultTextStyle.of(context).style.apply(color: color)
+      )
+    );
+  }
+
+  Icon checkAccomplishedIcon(ExerciseGoal goal){
+    if (checkAccomplished(goal)){
+      return const Icon( Icons.sentiment_satisfied_alt );
+    }
+    return const Icon( Icons.sentiment_very_dissatisfied );
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Exercise Goals'),
-      ),
-      body: Padding(
+    return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
+            const Text(
               'Add Exercise Goal',
               style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             DropdownButtonFormField<ExerciseType>(
               value: selectedType,
               onChanged: (value) {
@@ -181,50 +230,72 @@ class _GoalsPageState extends State<GoalsPage> {
                 );
               }).toList(),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             TextFormField(
               controller: durationController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Duration (minutes)',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             TextFormField(
               controller: repetitionsController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Repetitions',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: addExerciseGoal,
-              child: Text('Add Goal'),
+              child: const Text('Add Goal'),
             ),
-            SizedBox(height: 16.0),
-            Text(
-              'Exercise Goals:',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
+            const SizedBox(height: 16.0),
+            Row(
+              children:[                
+                const Text(
+                  'Exercise Goals:',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.sync),
+                  onPressed: () => setState(() {
+                    // DatabaseAdapter.putFakeDaily(); // debug to check reload
+                    // The daily records are reloaded automatically with the build 
+                  })
+                ),
+              ]
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: List.generate(exerciseGoals.length, (index) {
                     ExerciseGoal goal = exerciseGoals[index];
-                    return ListTile(
-                      title: Text(goal.type.toString().split('.').last),
-                      subtitle: Text('Duration: ${goal.duration} minutes, Repetitions: ${goal.repetitions}'),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () => removeExerciseGoal(index),
-                      ),
+                    return Column(
+                      children: [
+                        ListTile(
+                          title: Text(goal.type.toString().split('.').last),
+                          subtitle: Text('Duration: ${goal.duration} minutes, Repetitions: ${goal.repetitions}'),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () => removeExerciseGoal(index),
+                          ),
+                        ),
+
+                        Row(
+                          children:[
+                            checkAccomplishedText(goal),
+                            checkAccomplishedIcon(goal),
+                          ]
+                        )
+                      ],
                     );
                   }),
                 ),
@@ -232,8 +303,7 @@ class _GoalsPageState extends State<GoalsPage> {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
 
