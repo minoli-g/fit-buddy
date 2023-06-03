@@ -134,9 +134,7 @@ class _HistoryPageState extends State<HistoryPage>{
   @override
   Widget build(BuildContext context) {
 
-    return SingleChildScrollView (
-      child : 
-        Column(
+    return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             getTrendGraph(),
@@ -171,10 +169,28 @@ class _HistoryPageState extends State<HistoryPage>{
                 ],
               ),
             ),
+
+            Container(
+              padding: const EdgeInsets.all(15),
+              child: Row(
+                children: [
+                  const Text("Your exercise records"),
+                  IconButton(
+                    icon: const Icon(Icons.sync),
+                    onPressed: () => setState(() {
+                      allRecords = DatabaseAdapter.getAllRecords(); 
+                    })
+                  )
+                ],
+              ),
+            ),
           
-            getHistoryList()
+            Expanded(
+              child: getHistoryList()
+            )
+
            ],
-        )
+        
     );
   }
 }
