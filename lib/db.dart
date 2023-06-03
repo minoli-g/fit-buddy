@@ -133,4 +133,21 @@ class DatabaseAdapter {
 
   }
 
+
+  /// Overwrite current daily record with fake values
+  static void putFakeDaily() {
+
+    final box = Hive.box("logBox");
+    final currentDateTemp = DateTime.now();
+    final currentDay = DateTime (currentDateTemp.year, currentDateTemp.month, currentDateTemp.day);
+
+    var dailyRecord =  Log(
+        date: currentDay,
+        walkTime: 60,
+        runTime: 0,
+        bicycleTime: 0
+      );
+    box.put(currentDay.millisecondsSinceEpoch.toString(), dailyRecord);
+    
+  }
 }
