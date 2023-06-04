@@ -1,26 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-
-class MusicPage extends StatelessWidget {
-  const MusicPage({super.key, required this.title});
+class ExerciseMusicScreen extends StatefulWidget {
+  const ExerciseMusicScreen({super.key, required this.title});
 
   final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Exercise Music',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: ExerciseMusicScreen(),
-    );
-  }
-}
-
-class ExerciseMusicScreen extends StatefulWidget {
   @override
   _ExerciseMusicScreenState createState() => _ExerciseMusicScreenState();
 }
@@ -29,14 +13,20 @@ class _ExerciseMusicScreenState extends State<ExerciseMusicScreen> {
   AudioPlayer audioPlayer = AudioPlayer();
   String currentTrack = '';
   List<String> musicList = [
+    'http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Sevish_-__nbsp_.mp3',
+    'http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3',
+    'http://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg',
     'https://thegrowingdeveloper.org/files/audios/quiet-time.mp3?b4869097e6',
-    'https://thegrowingdeveloper.org/files/audios/quiet-time.mp3?b4869097e4',
-    'https://thegrowingdeveloper.org/files/audios/quiet-time.mp3?b4869097e7',
+    'http://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/theme_01.mp3',
+    'http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3',
   ];
   List<String> songNames = [
-    'Song 1',
-    'Song 2',
-    'Song 3',
+    'Sona Sona',
+    'Lahan Ge',
+    'Thera',
+    'Ritra ',
+    'Rabina ',
+    'Retna',
   ];
   Map<String, bool> isPlayingMap = {};
   Map<String, bool> isPausedMap = {};
@@ -99,25 +89,47 @@ class _ExerciseMusicScreenState extends State<ExerciseMusicScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Exercise Music')),
       body: Container(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              'Current Track:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8.0),
-            Text(
-              currentTrack.isNotEmpty ? songNames[musicList.indexOf(currentTrack)] : '',
-              style: TextStyle(fontSize: 16),
+            Container(
+              padding: EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: Colors.grey[300], // Set your desired background color
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'Current Track:',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8.0),
+                  Text(
+                    currentTrack.isNotEmpty ? songNames[musicList.indexOf(currentTrack)] : '',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 20.0),
+
+
+
             Text(
-              'Choose Exercise Music',
+              'Exercise Music List',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20.0),
+            Center(
+              child: Image.network(
+                'https://png.pngtree.com/png-clipart/20220823/original/pngtree-girl-running-in-park-and-listen-to-music-or-podcast-png-image_8454572.png', // Replace with the actual URL of your image
+                width: 200,
+                height: 200,
+              ),
             ),
             SizedBox(height: 20.0),
             Expanded(
@@ -148,7 +160,9 @@ class _ExerciseMusicScreenState extends State<ExerciseMusicScreen> {
                                 playMusic(trackUrl);
                               }
                             },
-                            color: isPlaying && !isPaused ? Colors.green : Colors.blue,
+                            color: isPlaying && !isPaused
+                                ? Colors.green
+                                : Colors.blue,
                             highlightColor: Colors.transparent,
                             splashColor: Colors.transparent,
                           ),
@@ -187,24 +201,5 @@ class _ExerciseMusicScreenState extends State<ExerciseMusicScreen> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

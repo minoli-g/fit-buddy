@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
       const ActivityPage(title: "Counter"),
       const HistoryPage(title: "History"),
       const GoalsPage(title: "Goals"),
-      const MusicPage(title: "Music")
+      const ExerciseMusicScreen(title: "Music")
     ];
   }
 

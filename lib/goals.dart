@@ -185,11 +185,11 @@ class _GoalsPageState extends State<GoalsPage> {
       color = Colors.red;
     }
     return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Text(
-        str, 
-        style: DefaultTextStyle.of(context).style.apply(color: color)
-      )
+        padding: const EdgeInsets.all(10),
+        child: Text(
+            str,
+            style: DefaultTextStyle.of(context).style.apply(color: color)
+        )
     );
   }
 
@@ -204,58 +204,72 @@ class _GoalsPageState extends State<GoalsPage> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Add Exercise Goal',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            'Add Exercise Goal',
+            style: TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          DropdownButtonFormField<ExerciseType>(
+            value: selectedType,
+            onChanged: (value) {
+              setState(() {
+                selectedType = value!;
+              });
+            },
+            items: ExerciseType.values.map((type) {
+              return DropdownMenuItem<ExerciseType>(
+                value: type,
+                child: Text(type.toString().split('.').last),
+              );
+            }).toList(),
+          ),
+          const SizedBox(height: 8.0),
+          TextFormField(
+            controller: durationController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+              labelText: 'Duration (minutes)',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          TextFormField(
+            controller: repetitionsController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+              labelText: 'Repetitions',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          // ElevatedButton(
+          //   onPressed: addExerciseGoal,
+          //   child: const Text('Add Goal'),
+          // ),
+          ElevatedButton(
+            onPressed: addExerciseGoal,
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.pressed)) {
+                    return Colors.yellow; // Change to yellow when pressed
+                  }
+                  return Colors.blue; // Default color
+                },
               ),
             ),
-            const SizedBox(height: 8.0),
-            DropdownButtonFormField<ExerciseType>(
-              value: selectedType,
-              onChanged: (value) {
-                setState(() {
-                  selectedType = value!;
-                });
-              },
-              items: ExerciseType.values.map((type) {
-                return DropdownMenuItem<ExerciseType>(
-                  value: type,
-                  child: Text(type.toString().split('.').last),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 8.0),
-            TextFormField(
-              controller: durationController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Duration (minutes)',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            TextFormField(
-              controller: repetitionsController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Repetitions',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: addExerciseGoal,
-              child: const Text('Add Goal'),
-            ),
-            const SizedBox(height: 16.0),
-            Row(
-              children:[                
+            child: const Text('Add Goal'),
+          ),
+          const SizedBox(height: 16.0),
+          Row(
+              children:[
                 const Text(
                   'Exercise Goals:',
                   style: TextStyle(
@@ -264,46 +278,78 @@ class _GoalsPageState extends State<GoalsPage> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.sync),
-                  onPressed: () => setState(() {
-                    // DatabaseAdapter.putFakeDaily(); // debug to check reload
-                    // The daily records are reloaded automatically with the build 
-                  })
+                    icon: const Icon(Icons.sync),
+                    onPressed: () => setState(() {
+                      // DatabaseAdapter.putFakeDaily(); // debug to check reload
+                      // The daily records are reloaded automatically with the build
+                    })
                 ),
               ]
-            ),
-            const SizedBox(height: 8.0),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: List.generate(exerciseGoals.length, (index) {
-                    ExerciseGoal goal = exerciseGoals[index];
-                    return Column(
-                      children: [
-                        ListTile(
-                          title: Text(goal.type.toString().split('.').last),
-                          subtitle: Text('Duration: ${goal.duration} minutes, Repetitions: ${goal.repetitions}'),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () => removeExerciseGoal(index),
-                          ),
-                        ),
+          ),
+          const SizedBox(height: 8.0),
 
-                        Row(
+          Expanded(
+            child: Container(
+              color: Colors.grey[300],
+              //color: Colors.lightGreen.withOpacity(0.8),
+              child: ListView.builder(
+                itemCount: exerciseGoals.length,
+                itemBuilder: (BuildContext context, int index) {
+                  ExerciseGoal goal = exerciseGoals[index];
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(goal.type.toString().split('.').last),
+                        subtitle: Text('Duration: ${goal.duration} minutes, Repetitions: ${goal.repetitions}'),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () => removeExerciseGoal(index),
+                        ),
+                      ),
+                      Row(
                           children:[
                             checkAccomplishedText(goal),
                             checkAccomplishedIcon(goal),
                           ]
-                        )
-                      ],
-                    );
-                  }),
-                ),
+                      )
+                    ],
+                  );
+                },
               ),
             ),
-          ],
-        ),
-      );
+          ),
+
+          // Expanded(
+          //   child: SingleChildScrollView(
+          //     child: Column(
+          //       children: List.generate(exerciseGoals.length, (index) {
+          //         ExerciseGoal goal = exerciseGoals[index];
+          //         return Column(
+          //           children: [
+          //             ListTile(
+          //               title: Text(goal.type.toString().split('.').last),
+          //               subtitle: Text('Duration: ${goal.duration} minutes, Repetitions: ${goal.repetitions}'),
+          //               trailing: IconButton(
+          //                 icon: const Icon(Icons.delete),
+          //                 onPressed: () => removeExerciseGoal(index),
+          //               ),
+          //             ),
+          //
+          //             Row(
+          //               children:[
+          //                 checkAccomplishedText(goal),
+          //                 checkAccomplishedIcon(goal),
+          //               ]
+          //             )
+          //           ],
+          //         );
+          //       }),
+          //     ),
+          //   ),
+          // ),
+        ],
+      ),
+    );
   }
 }
 
